@@ -1,1 +1,3 @@
-"# PhD_Econometrics_II" 
+# Problem Set 1
+
+Read me generic text
