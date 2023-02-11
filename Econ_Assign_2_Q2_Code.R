@@ -14,6 +14,7 @@ library(tidyverse)
 library(faux)
 library(ivreg)
 library(ggplot2)
+library(stargazer)
 
 theme_set(theme_classic())
 
@@ -101,6 +102,7 @@ means_df_a = final_df_a %>%
   group_by(sample_size, method) %>%
   summarize(mean_beta = mean(beta))
 
+stargazer(means_df_a, type="text", title="Table 1: Summary Statistics", out="Table1.txt")
 # Step 5
   # Plot the coefficients distributions. Contains 15 non-finite values, extreme values which cannot be represented on plot
 Plot_2a = ggplot(final_df_a, aes(x = beta, fill = method)) +
