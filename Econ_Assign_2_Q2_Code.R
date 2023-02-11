@@ -1,10 +1,14 @@
----
-title: "Problem_Set_2"
-output: github_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+### Question 2a ###############################################################
+
+# Step 1: Creates up a pool of 100,000 observations with the appropriate correlations. 
+# Step 2: Samples of 50, 100, 250 and 1000 from the toy dataset 10,000 times
+# Step 3: Run OLS and IV regressions on each sample and recover the x coefficients
+# Step 4: Calculate means for OLS and IV regressions for each sample size
+# Step 5: Graphs the distribution of coefficients by Method(OLS and IV) by sample size. Also identified means
+
+## Packages Required
 
 library(tidyverse)
 library(faux)
@@ -12,49 +16,8 @@ library(ivreg)
 library(ggplot2)
 
 theme_set(theme_classic())
-```
 
-## Question 1: Theory
-Show that, without perfect compliance, the Intention-to-treat effect will be smaller than the
-
-ITT and ATE are two methods used to estimate the impact of a treatment. 
-
-
-Without perfect compliance outcomes are not homogeneous. To account for heterogeneous outcomes we can delineate our binary treatment indicator ($D_i$) by those who are and are not affected by the binary instrument ($Z_i$):
-
-* $D_1i$ when $Z_i= 1$
-* $D_0i$ when $Z_i= 0$
-
-$i$ represents the treatment status ($D_i$) when the instrument ($Z_i$) takes one of the two binary values.
-
-We can represent the observed treatment status in the switching equation:
-
-$$D_i=D_{0i}+(D_{1i}-D_{0i})Z_i\ (Equation \ 1)$$ 
-When $Z_i=1$, $D_i$ takes on the value $D_{1i}$, as the $D_{0i}$ cancel. When $Z_i=0$, $D_i$ takes on the value $D_{0i}$, the second terms disappears, leaving $D_{0i}$. 
-
-We can rewrite this equation in regression form as:
-
-$$\delta_{0}+\delta_{1i}Z_i+\eta_i$$
-
-However $\delta_{1i}$ is not uniform for all individuals in the sample. Those who have a high $\delta$ are encouraged or discouraged by $Z_i$. But those with a low $\delta$ are less affected by $Z_i$. 
-
-There population can be divided into four groups. Those who are unaffected by the instrument ($Z_i$):
-
-* Always-Takers: People who always take the treatment. $D_{1i}=D_{0i}=1$.
-* Never-Takers: People who never take the Treatment. $D_{1i}=D_{0i}=0$.
-
-Additionally, there are those who are affected by the instrument. 
-* Compliers: Those influenced by the instrument ($Z_i$) as expected. $D_{1i}=1\ and\ D_{0i}=0$.
-* Defiers: Those influenced by the instrument ($Z_i$) unexpectedly. $D_{1i}=0\ and\ D_{0i}=1$.
-
-
-## Question 2: Simulation Excercise
-
-You can include R code in the document as follows:
-
-```{r Generate Data_a, include = FALSE, echo=FALSE, message=FALSE}
-
-## Base setup
+# Step 1
 
   # Base Data
 set.seed(1000) #sample
@@ -68,10 +31,10 @@ u = rnorm(n=obs,) # random sample
 
   #Generate correlated variables x, epsilon and z
 toy_dfa = rnorm_multi(n = obs,
-                     r=c(1,0.4,0.5, #  x correlated with epsilon 40%. z correlated with z 50%
-                         0.4,1,0, #x correlated with epsilon 40%. e correlated with z 0%
-                         0.5,0,1), # x correlated with epsilon 50%. epsilon correlated with z 0%
-                     varnames=c("x","epsilon","z"))
+                      r=c(1,0.4,0.5, #  x correlated with epsilon 40%. z correlated with z 50%
+                          0.4,1,0, #x correlated with epsilon 40%. e correlated with z 0%
+                          0.5,0,1), # x correlated with epsilon 50%. epsilon correlated with z 0%
+                      varnames=c("x","epsilon","z"))
 
   # Combine generate variables into dataframe
 toy_dfa = data.frame(toy_dfa, u, alpha, beta, delta_zero)
@@ -83,20 +46,16 @@ toy_dfa = toy_dfa %>% mutate(y=alpha+z+u) #back out y from known variables
 cor.test(toy_dfa$x,toy_dfa$e) #approx 40%
 cor.test(toy_dfa$z,toy_dfa$e) #approx 0%
 cor.test(toy_dfa$x,toy_dfa$z) #approx 50%
-
+  
   # Test Regression
 test_reg_a = lm(y ~ x, data = toy_dfa)
 summary(test_reg_a) 
 
-# alpha is not zero, but is not statistically significant. Fair to assume it is noise due to sample size. 
+  # alpha is not zero, but is not statistically significant. Fair to assume it is noise due to sample size. 
 
-
-```
-
-
-```{r Generate Beta_a, echo=FALSE}
-
-# Define sample sizes ans simulations
+# Step 2
+  
+  # Define sample sizes ans simulations
 samples = c(50, 100, 250, 1000)
 simulations = 10000
 beta_list_a = list()
@@ -110,7 +69,8 @@ for (i in 1:length(samples)) {
   for (j in 1:simulations) {
     sample_index = sample(1:nrow(toy_dfa), sample_size, replace = FALSE)
     sample_data = toy_dfa[sample_index, ]
-    
+
+    # Step 3    
     # OLS
     fit_ols = lm(y ~ x, data = sample_data)
     betas_ols_a[j] = coef(fit_ols)["x"]
@@ -125,22 +85,24 @@ for (i in 1:length(samples)) {
   
   # Convert the vectors to a data frame 
   betas_df_a = data.frame(method = c(rep("OLS", length(betas_ols_a)),rep("IV", length(betas_iv_a))),
-                         beta = c(betas_ols_a, betas_iv_a),
-                         sample_size = rep(sample_size, length(betas_ols_a) + length(betas_iv_a)))
-
+                          beta = c(betas_ols_a, betas_iv_a),
+                          sample_size = rep(sample_size, length(betas_ols_a) + length(betas_iv_a)))
+  
   beta_list_a[[i]] <- betas_df_a
-
+  
 }
 
   # Merge lists into dataframe. 
 final_df_a = bind_rows(beta_list_a)
 
+# Step 4
   # Recover means for each estimator and sample size
 means_df_a = final_df_a %>%
   group_by(sample_size, method) %>%
   summarize(mean_beta = mean(beta))
 
-# Plot the coefficients distributions. Contains 15 non-finite values, extreme values which cannot be represented on plot
+# Step 5
+  # Plot the coefficients distributions. Contains 15 non-finite values, extreme values which cannot be represented on plot
 Plot_2a = ggplot(final_df_a, aes(x = beta, fill = method)) +
   geom_density(alpha = 0.5) +
   facet_wrap(~ sample_size, ncol = 2) +
@@ -157,24 +119,28 @@ Plot_2a = ggplot(final_df_a, aes(x = beta, fill = method)) +
         legend.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")) +
   geom_vline(xintercept = mean(final_df_a[final_df_a$method == "OLS",]$beta),
-            color = "black",
-            linetype = "dotted", lwd=1) +
+             color = "black",
+             linetype = "dotted", lwd=1) +
   geom_vline(xintercept = mean(final_df_a[final_df_a$method == "IV",]$beta),
-            color = "grey",
-            linetype = "dotted", lwd=1)
+             color = "grey",
+             linetype = "dotted", lwd=1)
 
+### Question 2b ###############################################################
 
+#Repetitive of 2a, but with modifications of step 2 to reflect changes in correlations. 
+# Step 1: Creates up a pool of 100,000 observations with the appropriate correlations. 
+# Step 2: Samples of 50, 100, 250 and 1000 from the toy dataset 10,000 times
+# Step 3: Run OLS and IV regressions on each sample and recover the x coefficients
+# Step 4: Calculate means for OLS and IV regressions for each sample size
+# Step 5: Graphs the distribution of coefficients by Method(OLS and IV) by sample size. Also identified means
 
-```
-
-```{r Generate Data_b, echo=FALSE}
 
   #Generate correlated variables x, epsilon and z
 toy_dfb = rnorm_multi(n = obs,
-                     r=c(1,0.4,0.15, #  x correlated with epsilon 40%. z correlated with z 15%
-                         0.4,1,0, #x correlated with epsilon 40%. e correlated with z 0%
-                         0.15,0,1), # x correlated with epsilon 15%. epsilon correlated with z 0%
-                     varnames=c("x","epsilon","z"))
+                      r=c(1,0.4,0.15, #  x correlated with epsilon 40%. z correlated with z 15%
+                          0.4,1,0, #x correlated with epsilon 40%. e correlated with z 0%
+                          0.15,0,1), # x correlated with epsilon 15%. epsilon correlated with z 0%
+                      varnames=c("x","epsilon","z"))
 
   # Combine generate variables into dataframe
 toy_dfb = data.frame(toy_dfb, u, alpha, beta, delta_zero)
@@ -193,15 +159,9 @@ test_reg_b = lm(y ~ x, data = toy_dfb)
   #Summary Results. Beta is not equal to one. Assume it is related to the correlation between x and epsilon
 summary(test_reg_b) 
 
+  # Define sample sizes ans simulations
 
-
-
-```
-
-```{r Generate Beta_b, echo=FALSE}
-
-# Define sample sizes ans simulations
-
+# Step 2
 beta_list_b = list()
 
 for (i in 1:length(samples)) {
@@ -213,7 +173,8 @@ for (i in 1:length(samples)) {
   for (j in 1:simulations) {
     sample_index = sample(1:nrow(toy_dfb), sample_size, replace = FALSE)
     sample_data = toy_dfb[sample_index, ]
-    
+
+    # Step 3    
     # OLS
     fit_ols = lm(y ~ x, data = sample_data)
     betas_ols_b[j] = coef(fit_ols)["x"]
@@ -228,21 +189,23 @@ for (i in 1:length(samples)) {
   
   # Convert the vectors to a data frame
   betas_df_b = data.frame(method = c(rep("OLS", length(betas_ols_b)),rep("IV", length(betas_iv_b))),
-                         beta = c(betas_ols_b, betas_iv_b),
-                         sample_size = rep(sample_size, length(betas_ols_b) + length(betas_iv_b)))
-
+                          beta = c(betas_ols_b, betas_iv_b),
+                          sample_size = rep(sample_size, length(betas_ols_b) + length(betas_iv_b)))
+  
   beta_list_b[[i]] = betas_df_b
-
+  
 }
 
   # Form data frame from list of coefficient estimates
 final_df_b = bind_rows(beta_list_b)
 
+# Step 4
   # Calculate means for each estimator and sample size
 means_df_b = final_df_b %>%
   group_by(sample_size, method) %>%
   summarize(mean_beta = mean(beta))
 
+# Step 5
   # Plot the coefficients distributions. Cannot plot 9,297 due to non-finite values.The results become to extreme for ggplot to graph
 Plot_2b = ggplot(final_df_b, aes(x = beta, fill = method)) +
   geom_density(alpha = 0.5) +
@@ -260,21 +223,8 @@ Plot_2b = ggplot(final_df_b, aes(x = beta, fill = method)) +
         legend.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")) +
   geom_vline(xintercept = mean(final_df_b[final_df_b$method == "OLS",]$beta),
-            color = "black",
-            linetype = "dotted", lwd=1) +
+             color = "black",
+             linetype = "dotted", lwd=1) +
   geom_vline(xintercept = mean(final_df_b[final_df_b$method == "IV",]$beta),
-            color = "grey",
-            linetype = "dotted", lwd=1)
-
-
-```
-
-## Question 3: Empirical Application
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+             color = "grey",
+             linetype = "dotted", lwd=1)
