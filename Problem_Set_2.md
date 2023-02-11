@@ -66,15 +66,12 @@ parameter correlations.
 ### Q2 - Part A
 
 The plot below displays the distribution of estimated $\beta$
-coefficients for $x$ based on sample size and method.
-
-The sample sizes are arranged in an increasing order, with the sample
-size of 50 appearing in the top left and the sample size of 1000 in the
-bottom right.
-
-OLS coefficients are shown in black and IV estimates of $\beta$ in light
-grey. A dotted line in the same color highlights the mean $\beta$
-coefficient.
+coefficients for $x$ based on sample size and method. The sample sizes
+are arranged in an increasing order, with the sample size of 50
+appearing in the top left and the sample size of 1000 in the bottom
+right. OLS coefficients are shown in black and IV estimates of $\beta$
+in light grey. A dotted line in the same color highlights the mean
+$\beta$ coefficient.
 
 ![an image caption Source: “Author”](Rplot_2a.png)
 
