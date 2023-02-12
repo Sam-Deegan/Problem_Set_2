@@ -7,41 +7,23 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 
 
-theme_set(theme_classic())
 ```
 
 ## Question 1: Theory
-Show that, without perfect compliance, the Intention-to-treat effect will be smaller than the
 
-ITT and ATE are two methods used to estimate the impact of a treatment. 
+## Question 2: Part A
+The Intention-To-Treat effect is defined as $\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)$.$\mathbb{E}(Y\mid D=1)$. is the expected value of $Y$ given that they are in the treatment group.$\mathbb{E}(Y\mid D=0)$. is the expected value of $Y$ given that they are in the control group. It does not consider whether those assigned to treatment or control are actually treated.
 
+The Average Treatment Effect is defined as $\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$.$\mathbb{E}(Y\mid D=1,Z=1)$ where the expected value of $y$ given the individual is assigned to the treatment group and is assigned to treatment. $\mathbb{E}(Y\mid D=0,Z=0)$ is the expected value of $Y$ is assigned to the control group and does not receive treatment.
 
-Without perfect compliance outcomes are not homogeneous. To account for heterogeneous outcomes we can delineate our binary treatment indicator ($D_i$) by those who are and are not affected by the binary instrument ($Z_i$):
+The ITT and ATE are equivalent under perfect compliance as all those assigned to treatment, receive treatment: 
+$\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)=\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$
 
-* $D_1i$ when $Z_i= 1$
-* $D_0i$ when $Z_i= 0$
+If compliance is imperfect, The ITT is smaller than the ATE as not all those assigned to treatment group receive treatment. This reduces the average treatment among those assigned to the treatment group. 
 
-$i$ represents the treatment status ($D_i$) when the instrument ($Z_i$) takes one of the two binary values.
+$\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)<\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$
 
-We can represent the observed treatment status in the switching equation:
-
-$$D_i=D_{0i}+(D_{1i}-D_{0i})Z_i\ (Equation \ 1)$$ 
-When $Z_i=1$, $D_i$ takes on the value $D_{1i}$, as the $D_{0i}$ cancel. When $Z_i=0$, $D_i$ takes on the value $D_{0i}$, the second terms disappears, leaving $D_{0i}$. 
-
-We can rewrite this equation in regression form as:
-
-$$\delta_{0}+\delta_{1i}Z_i+\eta_i$$
-
-However $\delta_{1i}$ is not uniform for all individuals in the sample. Those who have a high $\delta$ are encouraged or discouraged by $Z_i$. But those with a low $\delta$ are less affected by $Z_i$. 
-
-There population can be divided into four groups. Those who are unaffected by the instrument ($Z_i$):
-
-* Always-Takers: People who always take the treatment. $D_{1i}=D_{0i}=1$.
-* Never-Takers: People who never take the Treatment. $D_{1i}=D_{0i}=0$.
-
-Additionally, there are those who are affected by the instrument. 
-* Compliers: Those influenced by the instrument ($Z_i$) as expected. $D_{1i}=1\ and\ D_{0i}=0$.
-* Defiers: Those influenced by the instrument ($Z_i$) unexpectedly. $D_{1i}=0\ and\ D_{0i}=1$.
+If the individuals in the treatment group are not receiving treatment the difference in outcomes between treatment and control groups is smaller than if everyone was fully compliant. This overstates the true treatment effect because observed treatment effects are based on comparing outcomes between fully compliant groups. 
 
 
 ## Question 2: Simulation Excercise
