@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question 1: Theory
 
-## Question 2: Part A
+### Question 1: Part A
 The Intention-To-Treat effect is defined as $\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)$.$\mathbb{E}(Y\mid D=1)$. is the expected value of $Y$ given that they are in the treatment group.$\mathbb{E}(Y\mid D=0)$. is the expected value of $Y$ given that they are in the control group. It does not consider whether those assigned to treatment or control are actually treated.
 
 The Average Treatment Effect is defined as $\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$.$\mathbb{E}(Y\mid D=1,Z=1)$ where the expected value of $y$ given the individual is assigned to the treatment group and is assigned to treatment. $\mathbb{E}(Y\mid D=0,Z=0)$ is the expected value of $Y$ is assigned to the control group and does not receive treatment.
@@ -25,6 +25,29 @@ $\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)<\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E
 
 If the individuals in the treatment group are not receiving treatment the difference in outcomes between treatment and control groups is smaller than if everyone was fully compliant. This overstates the true treatment effect because observed treatment effects are based on comparing outcomes between fully compliant groups. 
 
+
+### Question 2: Part B
+Under Local Average Treatment Effect  assumptions, the Wald Estimand provides an estimate of the Average Treatment Effect on the Treated (ATT), if $\mathbb{E}[Di|Zi = 0] = Pr(Di = 1|Zi = 0) = 0$.
+
+The LATE assumptions require that treatment is as good as random within the compliers. Individuals who would have taken the treatment if assigned to it,"compliers", are the only ones affected by the treatment. 
+
+$\mathbb{E}[Di|Zi = 0] = 0$ implies  no individuals in the control group who would have taken the treatment if assigned to it, which is a necessary for the LATE assumptions to hold.
+
+ATT is the expected difference in outcomes between individuals who are assigned to the treatment group *AND* take the treatment, and individuals who are assigned to the control group *AND* do not take the treatment. By definition, the ATT can be expressed as:
+
+$$ATT = \mathbb{E}[Yi|Zi = 1, Di = 1] − \mathbb{E}[Yi|Zi = 0, Di = 0]$$
+
+Substituting the expectations from the Wald Estimand into this definition, we have:
+
+ $= \dfrac{(E[Yi|Zi = 1] − E[Yi|Zi = 0])}{(E[Di|Zi = 1] − E[Di|Zi = 0])}$
+
+As $E[Di|Zi = 0] = 0$, we can simplify the denominator to:
+
+ $= \dfrac{E[Yi|Zi = 1] − E[Yi|Zi = 0]}{E[Di|Zi = 1]}$
+
+Therefore, under the LATE assumptions and $E[Di|Zi = 0] = 0$, the Wald Estimand provides an estimate of the Average Treatment Effect on the Treated (ATT).
+
+### Question 2: Part C
 
 ## Question 2: Simulation Excercise
 
@@ -51,7 +74,7 @@ The OLS estimates may be biased due to endogeneity, and thus do not converge on 
 
 These findings suggest that more data is needed for reliable IV estimates. The distribution of IV coefficients for samples of 1000 is similar in shape and peakedness to the distributions of OLS for samples of 100. From this comparison, it may be more efficient to address omitted variable bias through the inclusion of additional data when possible, rather than relying on IV estimators as a first solution.
 
-### Q2 - Part B
+### Question 2: Part B
 The data in the plot 2b shows the results that are consistent with those in Part A. The only difference is the modification to the correlations in the data that have weakened the instrument $z$.
 
 ![an image caption Source:](Rplot_2b.png)
