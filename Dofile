@@ -1,0 +1,52 @@
+clear all
+
+use "/Users/glennmcnamara/Downloads/assign2.dta"
+
+
+
+****************************** Question 3 **************************************
+*(a)*
+gen age4 = age^4
+gen age3 = age^3
+gen age2 = age^2
+
+gen yob4 = yob^4
+gen yob3 = yob^3
+gen yob2 = yob^2
+
+reg logearn schooling age4 age3 age2 age yob4 yob3 yob2 yob
+
+
+
+*(b)*
+drop LAW
+drop defier
+
+gen LAW = 0
+replace LAW = 1 if yob>=33
+
+gen defier = 0
+replace defier = 1 if LAW ==1 & schooling < 15
+
+
+
+sum defier if defier == 1
+sum defier if defier == 0
+
+
+*(C)*
+ssc install binscatter
+
+gen schoolleaver = 0
+replace schoolleaver=1 if schooling<15
+
+*Should we condition on other variables?*
+probit schoolleaver age2 age yob LAW
+predict phat1
+sum phat1
+
+
+binscatter phat yob, xline(33)
+binscatter schooling yob, xline(33)
+binscatter logearn yob, xline(33)
+
