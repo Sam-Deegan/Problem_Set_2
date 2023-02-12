@@ -39,16 +39,24 @@ $$ATT = \mathbb{E}[Yi|Zi = 1, Di = 1] − \mathbb{E}[Yi|Zi = 0, Di = 0]$$
 
 Substituting the expectations from the Wald Estimand into this definition, we have:
 
- $= \dfrac{(E[Yi|Zi = 1] − E[Yi|Zi = 0])}{(E[Di|Zi = 1] − E[Di|Zi = 0])}$
+ $= \dfrac{(\mathbb{E}[Yi|Zi = 1] − \mathbb{E}[Yi|Zi = 0])}{(\mathbb{E}[Di|Zi = 1] − \mathbb{E}[Di|Zi = 0])}$
 
-As $E[Di|Zi = 0] = 0$, we can simplify the denominator to:
+As $\mathbb{E}[Di|Zi = 0] = 0$, we can simplify the denominator to:
 
- $= \dfrac{E[Yi|Zi = 1] − E[Yi|Zi = 0]}{E[Di|Zi = 1]}$
+ $= \dfrac{\mathbb{E}[Yi|Zi = 1] − \mathbb{E}[Yi|Zi = 0]}{\mathbb{E}[Di|Zi = 1]}$
 
-Therefore, under the LATE assumptions and $E[Di|Zi = 0] = 0$, the Wald Estimand provides an estimate of the Average Treatment Effect on the Treated (ATT).
+Therefore, under the LATE assumptions and $\mathbb{E}[Di|Zi = 0] = 0$, the Wald Estimand provides an estimate of the Average Treatment Effect on the Treated (ATT).
 
-### Question 2: Part C
+### Question 2: Part C(I)
+In the presence of defiers the IV estimand is given by: 
 
+$$\beta_{IV}=\mathbb{E}[Y_i|D_i=1, complier]-\mathbb{E}[Y_i|D_i=0, complier]+(1-\pi_c)(\mathbb{E}[Y_i|D_i=0, defier]-\mathbb{E}[Y_i|D_i=1, defier]$$
+Wehere $\pi_c$ is the share of compliers. $\mathbb{E}[Y_i|D_i=x, complier/defier]$ identifies the expected value of Y_i given that the individual is assigned to treatment x and is either a complier or defier.
+
+The adapted estimand accounts for individuals who do not comply with assignment and therefore whose outcomes are not attributable to treatment. 
+
+### Question 2: Part C(II)
+If $\pi_d=a\pi_c$ with $0<a<1$. The implication is that deifers are are a share of compliers. If $B_{IV}>0$ treatment must have some positive effect on compliers. If the share of defiers is in fact proportional to the share of compliers, then the additional effect of treatment is likely positive. In this case the overall effect of treatment is liekly to be positive as well, but dilluted by the presence of defiers. However this result is not guaranteed and depends on the data and the assumptions made about the effect of treatment on the defiers
 ## Question 2: Simulation Excercise
 
 The following 5 steps were used to generate the toy data:
