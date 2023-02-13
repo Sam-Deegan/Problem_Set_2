@@ -292,3 +292,25 @@ sp_3 <- ggplot(data=dfdata, aes(x=yob, y=logearn)) + geom_point(alpha = 0) + sta
 sp_3 + geom_vline(xintercept = 33, color = "blue", size=0.5, linetype ="dotted")
 
 #3d) Wald estimator and 2SLS
+dfdata$LAW <- ifelse(dfdata$yob >= 33, 1, 0)
+#first stage
+reg2 <- lm(schooling~LAW,
+      data = dfdata)
+summary(reg2)
+#reduced form
+reg3 <- lm(logearn~LAW,
+           data = dfdata)
+summary(reg3)
+0.161749/0.99034
+#2sls
+iv_2 <- ivreg(logearn ~ schooling |
+                LAW,
+              data = dfdata)
+summary(iv_2)
+stargazer(iv_2)
+#compare OLS and 2SLS
+m_list <- list(OLS = reg1, IV = iv_1)
+msummary(m_list)
+
+
+
