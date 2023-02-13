@@ -237,6 +237,16 @@ Plot_2b = ggplot(final_df_b, aes(x = beta, fill = method)) +
 
 Plot_2b
 
+##Q3
+library(useful)
+library(stargazer)
+library(texreg)
+library(ggplot2)
+library(haven)
+library(foreign)
+library(binsreg)
+library(ggplot2)
+library(ivreg)
 
 
 dfdata <- read.dta("C:/UCD/Sem 2/Econometrics/Assignment/assign2.dta")
@@ -247,3 +257,38 @@ print("Position of missing values -")
 which(is.na(dfdata))
 print("Count of total missing values - ")
 sum(is.na(dfdata))
+#creating variables
+dfdata$age_4 <- dfdata$age^4
+dfdata$yob_4 <- dfdata$yob^4
+dfdata$age_3 <- dfdata$age^3
+dfdata$yob_3 <- dfdata$yob^3
+dfdata$age_2 <- dfdata$age^2
+dfdata$yob_2 <- dfdata$yob^2
+
+#3a) OLS
+reg1 <- lm(formula = logearn~schooling+age+age_2+age_3++age_4+yob+yob_2+yob_3+yob_4, data = dfdata)
+summary(reg1)
+summary(reg1)$coefficient
+## exporting the regression table
+stargazer(reg1)
+
+#3c)
+dfdata$schoolleaver <- ifelse(dfdata$schooling <15, 1, 0)
+## getting probabilities
+model1 <- glm(schoolleaver ~ age+age_2+age_3+age_4+yob+yob_2+yob_3+yob_4, data = dfdata, family = binomial(link = "probit"))
+predicted_probs <- predict(model1, type = "response")
+dfdata$pred_prob <- predicted_probs
+## making binscatter of probabilty that aperson leaves before school and yob
+plot1 <- binsreg(dfdata$pred_prob, dfdata$yob, line = c(3,3))
+sp_1 <- ggplot(data=dfdata, aes(x=yob, y=pred_prob)) + geom_point(alpha = 0) + stat_summary_bin(fun.y='mean', bins=2000, color='black', size=2, geom='point')
+sp_1 + geom_vline(xintercept = 33, color = "blue", size=0.8, linetype ="dashed")
+## making binscatter schooling and year of birth
+plot2 <- binsreg(dfdata$schooling, dfdata$yob, line = c(3,3))
+sp_2 <- ggplot(data=dfdata, aes(x=yob, y=schooling)) + geom_point(alpha = 0) + stat_summary_bin(fun.y='mean', bins=2000, color='black', size=2, geom='point') + ylim(14,16)
+sp_2 + geom_vline(xintercept = 33, color = "blue", size=0.8, linetype ="dashed")
+## making binscatter of log earnings and year of birth
+plot_3 <- binsreg(dfdata$logearn, dfdata$yob, line = c(3,3))
+sp_3 <- ggplot(data=dfdata, aes(x=yob, y=logearn)) + geom_point(alpha = 0) + stat_summary_bin(fun.y='mean', bins=2000, color='black', size=2, geom='point') + ylim(5.45,5.9)
+sp_3 + geom_vline(xintercept = 33, color = "blue", size=0.5, linetype ="dotted")
+
+#3d) Wald estimator and 2SLS
