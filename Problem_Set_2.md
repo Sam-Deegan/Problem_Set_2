@@ -3,51 +3,97 @@ Problem_Set_2
 
 ## Question 1: Theory
 
-Show that, without perfect compliance, the Intention-to-treat effect
-will be smaller than the
+### Question 1: Part A
 
-ITT and ATE are two methods used to estimate the impact of a treatment.
+The Intention-To-Treat effect is defined as
+$\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)$.$\mathbb{E}(Y\mid D=1)$.
+is the expected value of $Y$ given that they are in the treatment
+group.$\mathbb{E}(Y\mid D=0)$. is the expected value of $Y$ given that
+they are in the control group. It does not consider whether those
+assigned to treatment or control are actually treated.
 
-Without perfect compliance outcomes are not homogeneous. To account for
-heterogeneous outcomes we can delineate our binary treatment indicator
-($D_i$) by those who are and are not affected by the binary instrument
-($Z_i$):
+The Average Treatment Effect is defined as
+$\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$.$\mathbb{E}(Y\mid D=1,Z=1)$
+where the expected value of $y$ given the individual is assigned to the
+treatment group and is assigned to treatment.
+$\mathbb{E}(Y\mid D=0,Z=0)$ is the expected value of $Y$ is assigned to
+the control group and does not receive treatment.
 
-- $D_1i$ when $Z_i= 1$
-- $D_0i$ when $Z_i= 0$
+The ITT and ATE are equivalent under perfect compliance as all those
+assigned to treatment, receive treatment:
+$\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)=\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$
 
-$i$ represents the treatment status ($D_i$) when the instrument ($Z_i$)
-takes one of the two binary values.
+If compliance is imperfect, The ITT is smaller than the ATE as not all
+those assigned to treatment group receive treatment. This reduces the
+average treatment among those assigned to the treatment group.
 
-We can represent the observed treatment status in the switching
-equation:
+$\mathbb{E}(Y\mid D=1)-\mathbb{E}(Y\mid D=0)<\mathbb{E}(Y\mid D=1,Z=1)-\mathbb{E}(Y\mid D=0, Z=0)$
 
-$$D_i=D_{0i}+(D_{1i}-D_{0i})Z_i\ (Equation \ 1)$$ When $Z_i=1$, $D_i$
-takes on the value $D_{1i}$, as the $D_{0i}$ cancel. When $Z_i=0$, $D_i$
-takes on the value $D_{0i}$, the second terms disappears, leaving
-$D_{0i}$.
+If the individuals in the treatment group are not receiving treatment
+the difference in outcomes between treatment and control groups is
+smaller than if everyone was fully compliant. This overstates the true
+treatment effect because observed treatment effects are based on
+comparing outcomes between fully compliant groups.
 
-We can rewrite this equation in regression form as:
+### Question 2: Part B
 
-$$\delta_{0}+\delta_{1i}Z_i+\eta_i$$
+Under Local Average Treatment Effect assumptions, the Wald Estimand
+provides an estimate of the Average Treatment Effect on the Treated
+(ATT), if $\mathbb{E}[Di|Zi = 0] = Pr(Di = 1|Zi = 0) = 0$.
 
-However $\delta_{1i}$ is not uniform for all individuals in the sample.
-Those who have a high $\delta$ are encouraged or discouraged by $Z_i$.
-But those with a low $\delta$ are less affected by $Z_i$.
+The LATE assumptions require that treatment is as good as random within
+the compliers. Individuals who would have taken the treatment if
+assigned to it,“compliers”, are the only ones affected by the treatment.
 
-There population can be divided into four groups. Those who are
-unaffected by the instrument ($Z_i$):
+$\mathbb{E}[Di|Zi = 0] = 0$ implies no individuals in the control group
+who would have taken the treatment if assigned to it, which is a
+necessary for the LATE assumptions to hold.
 
-- Always-Takers: People who always take the treatment.
-  $D_{1i}=D_{0i}=1$.
-- Never-Takers: People who never take the Treatment. $D_{1i}=D_{0i}=0$.
+ATT is the expected difference in outcomes between individuals who are
+assigned to the treatment group *AND* take the treatment, and
+individuals who are assigned to the control group *AND* do not take the
+treatment. By definition, the ATT can be expressed as:
 
-Additionally, there are those who are affected by the instrument. \*
-Compliers: Those influenced by the instrument ($Z_i$) as expected.
-$D_{1i}=1\ and\ D_{0i}=0$. \* Defiers: Those influenced by the
-instrument ($Z_i$) unexpectedly. $D_{1i}=0\ and\ D_{0i}=1$.
+$$ATT = \mathbb{E}[Yi|Zi = 1, Di = 1] − \mathbb{E}[Yi|Zi = 0, Di = 0]$$
 
-## Question 2: Simulation Excercise
+Substituting the expectations from the Wald Estimand into this
+definition, we have:
+
+$= \dfrac{(\mathbb{E}[Yi|Zi = 1] − \mathbb{E}[Yi|Zi = 0])}{(\mathbb{E}[Di|Zi = 1] − \mathbb{E}[Di|Zi = 0])}$
+
+As $\mathbb{E}[Di|Zi = 0] = 0$, we can simplify the denominator to:
+
+$= \dfrac{\mathbb{E}[Yi|Zi = 1] − \mathbb{E}[Yi|Zi = 0]}{\mathbb{E}[Di|Zi = 1]}$
+
+Therefore, under the LATE assumptions and $\mathbb{E}[Di|Zi = 0] = 0$,
+the Wald Estimand provides an estimate of the Average Treatment Effect
+on the Treated (ATT).
+
+### Question 2: Part C(I)
+
+In the presence of defiers the IV estimand is given by:
+
+$$\beta_{IV}=\mathbb{E}[Y_i|D_i=1, complier]-\mathbb{E}[Y_i|D_i=0, complier]+(1-\pi_c)(\mathbb{E}[Y_i|D_i=0, defier]-\mathbb{E}[Y_i|D_i=1, defier]$$
+Wehere $\pi_c$ is the share of compliers.
+$\mathbb{E}[Y_i|D_i=x, complier/defier]$ identifies the expected value
+of Y_i given that the individual is assigned to treatment x and is
+either a complier or defier.
+
+The adapted estimand accounts for individuals who do not comply with
+assignment and therefore whose outcomes are not attributable to
+treatment.
+
+### Question 2: Part C(II) \<- ChatGPT Solution, not sure if correct
+
+If $\pi_d=a\pi_c$ with $0<a<1$. The implication is that deifers are are
+a share of compliers. If $B_{IV}>0$ treatment must have some positive
+effect on compliers. If the share of defiers is in fact proportional to
+the share of compliers, then the additional effect of treatment is
+likely positive. In this case the overall effect of treatment is liekly
+to be positive as well, but dilluted by the presence of defiers. However
+this result is not guaranteed and depends on the data and the
+assumptions made about the effect of treatment on the defiers \##
+Question 2: Simulation Excercise
 
 The following 5 steps were used to generate the toy data:
 
@@ -102,7 +148,7 @@ of 100. From this comparison, it may be more efficient to address
 omitted variable bias through the inclusion of additional data when
 possible, rather than relying on IV estimators as a first solution.
 
-### Q2 - Part B
+### Question 2: Part B
 
 The data in the plot 2b shows the results that are consistent with those
 in Part A. The only difference is the modification to the correlations

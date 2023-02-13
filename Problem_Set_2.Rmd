@@ -55,7 +55,7 @@ Wehere $\pi_c$ is the share of compliers. $\mathbb{E}[Y_i|D_i=x, complier/defier
 
 The adapted estimand accounts for individuals who do not comply with assignment and therefore whose outcomes are not attributable to treatment. 
 
-### Question 2: Part C(II)
+### Question 2: Part C(II) <- ChatGPT Solution, not sure if correct
 If $\pi_d=a\pi_c$ with $0<a<1$. The implication is that deifers are are a share of compliers. If $B_{IV}>0$ treatment must have some positive effect on compliers. If the share of defiers is in fact proportional to the share of compliers, then the additional effect of treatment is likely positive. In this case the overall effect of treatment is liekly to be positive as well, but dilluted by the presence of defiers. However this result is not guaranteed and depends on the data and the assumptions made about the effect of treatment on the defiers
 ## Question 2: Simulation Excercise
 
