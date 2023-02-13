@@ -236,3 +236,14 @@ Plot_2b = ggplot(final_df_b, aes(x = beta, fill = method)) +
              linetype = "dotted", lwd=1)
 
 Plot_2b
+
+
+
+dfdata <- read.dta("C:/UCD/Sem 2/Econometrics/Assignment/assign2.dta")
+summary(dfdata)
+#data check methods
+sum(is.na(dfdata))
+print("Position of missing values -")
+which(is.na(dfdata))
+print("Count of total missing values - ")
+sum(is.na(dfdata))
